@@ -10,8 +10,8 @@ class ByteTiledMapPacket(
 
     override fun createTiledMap(): TiledMap {
         val fileHandle = Gdx.files.local(".temp.tiled.map.tmx")
-        fileHandle.writeBytes(data, false)
-        return TmxMapLoader{ fileHandle }.load("")
+        fileHandle.writeBytes(data, false) // TODO this could raise an exception
+        return TmxMapLoader { fileHandle }.load("")
     }
 
 }

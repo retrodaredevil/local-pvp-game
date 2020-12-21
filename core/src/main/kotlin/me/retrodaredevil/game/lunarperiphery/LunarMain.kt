@@ -14,6 +14,8 @@ class LunarMain : Game() {
 
     private lateinit var renderObject: RenderObject
 
+    private var nextScreen: Screen? = null
+
     override fun create() {
         val batch: Batch = SpriteBatch()
         val mainSkin = Skin(Gdx.files.internal("skins/main/skin.json"))
@@ -23,7 +25,15 @@ class LunarMain : Game() {
         setScreen(TitleScreen(::changeScreen, renderObject))
     }
     private fun changeScreen(newScreen: Screen) {
-        setScreen(newScreen)
+        nextScreen = newScreen
+    }
+
+    override fun render() {
+        nextScreen?.let {
+            setScreen(it)
+            nextScreen = null
+        }
+        super.render()
     }
 
     override fun dispose() {

@@ -7,11 +7,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FitViewport
+import me.retrodaredevil.game.lunarperiphery.BasicClientServerBridge
+import me.retrodaredevil.game.lunarperiphery.LunarServerHandler
 import me.retrodaredevil.game.lunarperiphery.render.*
+import java.util.*
 
 class TitleScreen(
         private val screenChanger: ScreenChanger,
-        private val renderObject: RenderObject
+        renderObject: RenderObject
 ) : ScreenAdapter() {
 
     val hostGameButton: Button
@@ -58,7 +61,10 @@ class TitleScreen(
         uiStage.act(delta)
 
         if (hostGameButton.isPressed) {
-            println("Hosting")
+            val clientId = UUID.randomUUID()
+            val clientServer = BasicClientServerBridge(clientId)
+            val serverHandler = LunarServerHandler(clientServer)
+            screenChanger.change(GameScreen(clientServer, serverHandler))
         }
         if (joinGameButton.isPressed) {
 

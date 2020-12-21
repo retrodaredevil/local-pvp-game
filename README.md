@@ -26,3 +26,6 @@ UIs to use
 Possibilities:
 * Use TiledMaps
 * There can be different terrains. In space, use a jetpack to move around. On land, walk.
+
+Code Style
+* Use `.editorconfig` file and enable continuation indent for everything that you can enable in IntelliJ
