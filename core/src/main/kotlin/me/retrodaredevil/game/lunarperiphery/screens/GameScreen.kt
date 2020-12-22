@@ -57,7 +57,7 @@ class GameScreen(
         }
         gameMap?.let { gameMap ->
             gameMap.update(delta)
-            client.send(PlayerLocationPacket(gameMap.playerLocation.x, gameMap.playerLocation.y, gameMap.movementId))
+            client.send(PlayerLocationPacket(gameMap.playerBody.position.x, gameMap.playerBody.position.y, gameMap.movementId))
         }
         renderable.render(delta)
     }

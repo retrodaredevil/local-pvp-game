@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.maps.tiled.TiledMap
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.Viewport
@@ -15,13 +17,24 @@ class GameMap(
         private val tiledMap: TiledMap
 ) : Updatable, Renderable {
     val tileSize = tiledMap.properties["tilewidth"] as Int
+    val mapWidth = tiledMap.properties["width"] as Int
+    val mapHeight = tiledMap.properties["height"] as Int
     private val tiledViewport: Viewport
     private val stageViewport: Viewport
     private val stage: Stage
 
     private val renderable: Renderable
 
-    val playerLocation = Vector2()
+    val world = World(Vector2.Zero, false)
+    val playerBody = world.createBody(BodyDef().apply {
+        type = BodyDef.BodyType.DynamicBody
+    }).apply {
+        createFixture(FixtureDef().apply {
+            shape = PolygonShape().apply {
+                setAsBox(0.5f, 0.5f)
+            }
+        })
+    }
     var movementId = UUID.randomUUID()
     private val tempVector = Vector2()
 
@@ -54,12 +67,30 @@ class GameMap(
                 TiledMapRenderable(tiledMap, tiledCamera, intArrayOf(backgroundLayer, floorLayer)),
                 StageRenderable(stage),
                 TiledMapRenderable(tiledMap, tiledCamera, intArrayOf(foregroundLayer, topLayer)),
+                WorldDebugRenderable(world, stageViewport.camera),
         ))
         resize(Gdx.graphics.width, Gdx.graphics.height)
+
+        val foreground = tiledMap.layers[foregroundLayer] as TiledMapTileLayer
+        for(x in 0 until mapWidth) for (y in 0 until mapHeight) {
+            val cell = foreground.getCell(x, y)
+            if (cell != null) {
+                world.createBody(BodyDef().apply {
+                    type = BodyDef.BodyType.StaticBody
+                    position.set(x.toFloat(), y.toFloat())
+                }).apply {
+                    createFixture(FixtureDef().apply {
+                        shape = PolygonShape().apply {
+                            setAsBox(0.5f, 0.5f)
+                        }
+                    })
+                }
+            }
+        }
     }
 
     fun teleport(x: Float, y: Float, movementId: UUID) {
-        playerLocation.set(x, y)
+        playerBody.setTransform(x, y, 0f)
         this.movementId = movementId
     }
 
@@ -75,13 +106,15 @@ class GameMap(
         } else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             tempVector.x = -1f
         }
-//            println(ArrayList<String>().apply { tiledMap.properties.keys.forEach { add(it) } })
         if (!tempVector.isZero) {
-            tempVector.nor().scl(delta * 10)
+            tempVector.nor().scl(10.0f)
         }
-        playerLocation.add(tempVector)
-        tiledViewport.camera.position.set(playerLocation.x * tileSize, playerLocation.y * tileSize, 0f)
-        stageViewport.camera.position.set(playerLocation.x, playerLocation.y, 0f)
+        playerBody.linearVelocity = tempVector
+        world.step(delta, 6, 2)
+        tiledViewport.camera.position.set((playerBody.position.x + .5f) * tileSize, (playerBody.position.y + .5f) * tileSize, 0f)
+        stageViewport.camera.position.set(playerBody.position.x, playerBody.position.y, 0f)
+        tiledViewport.camera.update()
+        stageViewport.camera.update()
     }
 
     override fun render(delta: Float) {

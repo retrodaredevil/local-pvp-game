@@ -4,7 +4,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 
-class TiledMapRenderable(
+class TiledMapRenderable
+/**
+ * @param tiledMap The [TiledMap]
+ * @param cameraToFollow The camera to follow. Note that [OrthographicCamera.update] will not be called by this class, so make sure the camera is up to date
+ * @param layersToRender An array of ints with the order to render certain layers, or null to render all layers in order
+ */
+constructor(
         tiledMap: TiledMap,
         private val cameraToFollow: OrthographicCamera,
         private val layersToRender: IntArray? = null
@@ -14,13 +20,11 @@ class TiledMapRenderable(
 
     override fun render(delta: Float) {
         tiledMapRenderer.setView(cameraToFollow)
-        cameraToFollow.update() // the camera's position has likely been updated elsewhere, so let's make sure the other internal stuff is up to date
         if (layersToRender == null) {
             tiledMapRenderer.render()
         } else {
             tiledMapRenderer.render(layersToRender)
         }
-//        println("Rendering at ${cameraToFollow.position}")
     }
 
     override fun resize(width: Int, height: Int) {
