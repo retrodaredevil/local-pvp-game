@@ -75,13 +75,55 @@ class GameMap(
         for(x in 0 until mapWidth) for (y in 0 until mapHeight) {
             val cell = foreground.getCell(x, y)
             if (cell != null) {
+                val tileId = cell.tile.id // note that this is 1 based, unlike in the tiled editor, where the ID is 0 based. This means this is +1 from the expected value
+                println(tileId)
                 world.createBody(BodyDef().apply {
                     type = BodyDef.BodyType.StaticBody
                     position.set(x.toFloat(), y.toFloat())
                 }).apply {
                     createFixture(FixtureDef().apply {
-                        shape = PolygonShape().apply {
-                            setAsBox(0.5f, 0.5f)
+                        shape = when (tileId) {
+                            in listOf(68) -> {
+                                PolygonShape().apply {
+                                    set(arrayOf(
+                                            Vector2(-.5f, .5f),
+                                            Vector2(.5f, .5f),
+                                            Vector2(.5f, -.5f),
+                                    ))
+                                }
+                            }
+                            in listOf(69) -> {
+                                PolygonShape().apply {
+                                    set(arrayOf(
+                                            Vector2(-.5f, -.5f),
+                                            Vector2(-.5f, .5f),
+                                            Vector2(.5f, .5f),
+                                    ))
+                                }
+                            }
+                            in listOf(38) -> {
+                                PolygonShape().apply {
+                                    set(arrayOf(
+                                            Vector2(-.5f, -.5f),
+                                            Vector2(.5f, .5f),
+                                            Vector2(.5f, -.5f),
+                                    ))
+                                }
+                            }
+                            in listOf(39) -> {
+                                PolygonShape().apply {
+                                    set(arrayOf(
+                                            Vector2(-.5f, .5f),
+                                            Vector2(-.5f, -.5f),
+                                            Vector2(.5f, -.5f),
+                                    ))
+                                }
+                            }
+                            else -> {
+                                PolygonShape().apply {
+                                    setAsBox(0.5f, 0.5f)
+                                }
+                            }
                         }
                     })
                 }
