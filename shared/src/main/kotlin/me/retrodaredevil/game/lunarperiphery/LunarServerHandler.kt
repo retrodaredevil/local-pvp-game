@@ -2,6 +2,7 @@ package me.retrodaredevil.game.lunarperiphery
 
 import me.retrodaredevil.game.lunarperiphery.info.ClientConnectedMessage
 import me.retrodaredevil.game.lunarperiphery.packet.LocalTiledMapPacket
+import me.retrodaredevil.game.lunarperiphery.packet.PlayerLocationPacket
 import me.retrodaredevil.game.lunarperiphery.packet.RequestTiledMapPacket
 import java.util.*
 
@@ -27,6 +28,10 @@ class LunarServerHandler(
                 is RequestTiledMapPacket -> {
                     val tiledMapPacket = if (clientId in localClients) LocalTiledMapPacket("untitled.tmx") else error("Not supported yet!")
                     server.sendPacket(clientId, tiledMapPacket)
+                    server.sendPacket(clientId, PlayerLocationPacket(59f, 55f, UUID.randomUUID()))
+                }
+                is PlayerLocationPacket -> {
+                    println("Player is at ${packet.x}, ${packet.y}")
                 }
             }
         }

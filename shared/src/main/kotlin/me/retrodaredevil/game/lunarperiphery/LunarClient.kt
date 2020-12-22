@@ -8,6 +8,10 @@ import java.util.*
  */
 interface LunarClient {
     fun poll(): Packet?
+
+    /**
+     * Sends the packet to the server
+     */
     fun send(packet: Packet)
 
     val clientId: UUID

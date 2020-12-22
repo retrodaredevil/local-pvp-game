@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import me.retrodaredevil.game.lunarperiphery.render.RenderObject
 import me.retrodaredevil.game.lunarperiphery.screens.TitleScreen
+import kotlin.math.min
 
 
 class LunarMain : Game() {
@@ -33,7 +34,13 @@ class LunarMain : Game() {
             setScreen(it)
             nextScreen = null
         }
-        super.render()
+        val delta = Gdx.graphics.deltaTime
+        if (delta > 1 / 20f) {
+            println("delta: $delta")
+        }
+        screen?.render(min(delta, 1 / 20f))
+
+        Gdx.graphics.setTitle("Lunar Periphery - FPS: ${Gdx.graphics.framesPerSecond}")
     }
 
     override fun dispose() {

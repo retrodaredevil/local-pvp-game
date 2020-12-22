@@ -1,21 +1,17 @@
 package me.retrodaredevil.game.lunarperiphery.render
 
-import com.badlogic.gdx.scenes.scene2d.Stage
-
-class StageRenderable(
-        private val stage: Stage
+class RenderableReference(
+        private val renderableGetter: () -> Renderable?
 ) : Renderable {
-
     override fun render(delta: Float) {
-        stage.draw()
+        renderableGetter()?.render(delta)
     }
 
     override fun resize(width: Int, height: Int) {
-        stage.viewport.update(width, height, false)
+        renderableGetter()?.resize(width, height)
     }
 
     override fun dispose() {
-        stage.dispose()
+        renderableGetter()?.dispose()
     }
-
 }

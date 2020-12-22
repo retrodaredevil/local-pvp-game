@@ -5,7 +5,8 @@ enum class PacketType(
         val serverToClientAllowed: Boolean = true
 ) {
     TILED_MAP(clientToServerAllowed = false),
-    REQUEST_TILED_MAP(serverToClientAllowed = false)
+    REQUEST_TILED_MAP(serverToClientAllowed = false),
+    PLAYER_LOCATION,
     ;
 
 }
