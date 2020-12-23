@@ -67,7 +67,7 @@ class GameMap(
                 TiledMapRenderable(tiledMap, tiledCamera, intArrayOf(backgroundLayer, floorLayer)),
                 StageRenderable(stage),
                 TiledMapRenderable(tiledMap, tiledCamera, intArrayOf(foregroundLayer, topLayer)),
-                WorldDebugRenderable(world, stageViewport.camera),
+                ToggleRenderable(WorldDebugRenderable(world, stageViewport.camera)) { Gdx.input.isKeyJustPressed(Input.Keys.H) },
         ))
         resize(Gdx.graphics.width, Gdx.graphics.height)
 
@@ -76,54 +76,17 @@ class GameMap(
             val cell = foreground.getCell(x, y)
             if (cell != null) {
                 val tileId = cell.tile.id // note that this is 1 based, unlike in the tiled editor, where the ID is 0 based. This means this is +1 from the expected value
-                println(tileId)
                 world.createBody(BodyDef().apply {
                     type = BodyDef.BodyType.StaticBody
                     position.set(x.toFloat(), y.toFloat())
                 }).apply {
                     createFixture(FixtureDef().apply {
                         shape = when (tileId) {
-                            in listOf(68) -> {
-                                PolygonShape().apply {
-                                    set(arrayOf(
-                                            Vector2(-.5f, .5f),
-                                            Vector2(.5f, .5f),
-                                            Vector2(.5f, -.5f),
-                                    ))
-                                }
-                            }
-                            in listOf(69) -> {
-                                PolygonShape().apply {
-                                    set(arrayOf(
-                                            Vector2(-.5f, -.5f),
-                                            Vector2(-.5f, .5f),
-                                            Vector2(.5f, .5f),
-                                    ))
-                                }
-                            }
-                            in listOf(38) -> {
-                                PolygonShape().apply {
-                                    set(arrayOf(
-                                            Vector2(-.5f, -.5f),
-                                            Vector2(.5f, .5f),
-                                            Vector2(.5f, -.5f),
-                                    ))
-                                }
-                            }
-                            in listOf(39) -> {
-                                PolygonShape().apply {
-                                    set(arrayOf(
-                                            Vector2(-.5f, .5f),
-                                            Vector2(-.5f, -.5f),
-                                            Vector2(.5f, -.5f),
-                                    ))
-                                }
-                            }
-                            else -> {
-                                PolygonShape().apply {
-                                    setAsBox(0.5f, 0.5f)
-                                }
-                            }
+                            in listOf(68) -> ShapeConstants.TRIANGLE_SMOOTH_LOWER_LEFT
+                            in listOf(69) -> ShapeConstants.TRIANGLE_SMOOTH_LOWER_RIGHT
+                            in listOf(38) -> ShapeConstants.TRIANGLE_SMOOTH_UPPER_LEFT
+                            in listOf(39) -> ShapeConstants.TRIANGLE_SMOOTH_UPPER_RIGHT
+                            else -> ShapeConstants.BOX_SMOOTH_EDGES
                         }
                     })
                 }
