@@ -29,3 +29,4 @@ Possibilities:
 
 Code Style
 * Use `.editorconfig` file and enable continuation indent for everything that you can enable in IntelliJ
+* Use trailing commas for lists that span multiple lines

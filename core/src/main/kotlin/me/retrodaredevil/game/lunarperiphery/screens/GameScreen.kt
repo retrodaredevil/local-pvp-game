@@ -18,7 +18,8 @@ import me.retrodaredevil.game.lunarperiphery.render.*
 
 class GameScreen(
         private val client: LunarClient,
-        private val updatable: Updatable
+        private val updatable: Updatable,
+        private val renderObject: RenderObject,
 ) : ScreenAdapter() {
 
     private val renderable: Renderable
@@ -43,7 +44,7 @@ class GameScreen(
             when (packet) {
                 is TiledMapPacket -> {
                     val tiledMap = packet.createTiledMap()
-                    gameMap = GameMap(tiledMap)
+                    gameMap = GameMap(tiledMap, renderObject)
                 }
                 is PlayerLocationPacket -> {
                     val gameMap = gameMap

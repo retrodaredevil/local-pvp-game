@@ -1,9 +1,16 @@
 
 skin.png
-size: 32,32
+size: 64,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+alien
+  rotate: false
+  xy: 2, 20
+  size: 32, 64
+  orig: 32, 64
+  offset: 0, 0
+  index: -1
 cherry
   rotate: false
   xy: 2, 2

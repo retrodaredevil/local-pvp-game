@@ -4,7 +4,7 @@ class ToggleRenderable(
         private val renderable: Renderable,
         private val toggle: () -> Boolean
 ) : Renderable {
-    private var show = true
+    var show = false
     override fun render(delta: Float) {
         if (toggle()) {
             show = !show;

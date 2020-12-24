@@ -14,7 +14,7 @@ import java.util.*
 
 class TitleScreen(
         private val screenChanger: ScreenChanger,
-        renderObject: RenderObject
+        private val renderObject: RenderObject
 ) : ScreenAdapter() {
 
     val hostGameButton: Button
@@ -64,7 +64,7 @@ class TitleScreen(
             val clientId = UUID.randomUUID()
             val clientServer = BasicClientServerBridge(clientId)
             val serverHandler = LunarServerHandler(clientServer)
-            screenChanger.change(GameScreen(clientServer, serverHandler))
+            screenChanger.change(GameScreen(clientServer, serverHandler, renderObject))
         }
         if (joinGameButton.isPressed) {
 
